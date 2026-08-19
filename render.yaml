@@ -13,7 +13,7 @@ services:
         value: 7d
       # Replace with your deployed Vercel frontend URL
       - key: CLIENT_URL
-        value: http://localhost:5173,https://shop-sphere-2rcygq5uz-errol-3a8a3049.vercel.app
+        value: http://localhost:5173,https://shop-sphere-8o6she776-errol-3a8a3049.vercel.app
       # Set these two in the Render dashboard (never commit real values)
       - key: DATABASE_URL
         sync: false
