@@ -8,7 +8,18 @@ const { uploadDir } = require('./middleware/upload.middleware');
 
 const app = express();
 
-app.use(cors({ origin: env.clientOrigins, credentials: true }));
+const allowedOrigins = new Set(env.clientOrigins);
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.has(origin) || origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(uploadDir));
