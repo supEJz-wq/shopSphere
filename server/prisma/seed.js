@@ -132,7 +132,7 @@ async function main() {
 
   const customer = await prisma.user.upsert({
     where: { email: 'demo@shopsphere.com' },
-    update: {},
+    update: { role: 'customer' },
     create: {
       firstName: 'Demo',
       lastName: 'User',
