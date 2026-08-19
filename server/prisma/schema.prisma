@@ -1,0 +1,254 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String               @id @default(cuid())
+  firstName      String
+  lastName       String
+  email          String               @unique
+  password       String
+  role           String               @default("customer")
+  isBanned       Boolean              @default(false)
+  cartItems      CartItem[]
+  orders         Order[]
+  products       Product[]            @relation("SellerProducts")
+  applications   SellerApplication[]  @relation("ApplicationOwner")
+  reviewedApps   SellerApplication[]  @relation("ApplicationReviewer")
+  productReviews ProductReview[]
+  reports        Report[]            @relation("ReportsFiled")
+  resolvedReports Report[]            @relation("ReportResolver")
+  warnings       SellerWarning[]      @relation("SellerWarnings")
+  issuedWarnings SellerWarning[]      @relation("AdminWarnings")
+  warningReplies WarningReply[]      @relation("WarningReplySellers")
+  banAppeals     BanAppeal[]          @relation("SellerBanAppeals")
+  reviewedAppeals BanAppeal[]         @relation("AdminReviewedAppeals")
+  moderationLogsIssued    ModerationLog[] @relation("ModerationLogsByAdmins")
+  moderationLogsTargeted  ModerationLog[] @relation("ModerationLogsForSellers")
+  withdrawals         Withdrawal[] @relation("SellerWithdrawals")
+  reviewedWithdrawals Withdrawal[] @relation("AdminWithdrawals")
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@map("users")
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  description String
+  category    String
+  price       Decimal     @db.Decimal(10, 2)
+  stock       Int
+  rating      Decimal     @db.Decimal(3, 2)
+  image       String
+  images      String[]    @default([])
+  status      String      @default("active") // active | banned
+  sellerId    String?
+  seller      User?       @relation("SellerProducts", fields: [sellerId], references: [id], onDelete: SetNull)
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  reviews     ProductReview[]
+  banAppeals  BanAppeal[]     @relation("ProductBanAppeals")
+  moderationLogs ModerationLog[] @relation("ModerationLogsForProducts")
+  createdAt   DateTime    @default(now())
+
+  @@map("products")
+}
+
+model SellerWarning {
+  id        String   @id @default(cuid())
+  sellerId  String
+  adminId   String
+  message   String
+  seller    User     @relation("SellerWarnings", fields: [sellerId], references: [id], onDelete: Cascade)
+  admin     User     @relation("AdminWarnings", fields: [adminId], references: [id], onDelete: Cascade)
+  replies   WarningReply[]
+  createdAt DateTime @default(now())
+
+  @@map("seller_warnings")
+}
+
+model WarningReply {
+  id        String   @id @default(cuid())
+  warningId String
+  sellerId  String
+  message   String
+  imageUrl  String?
+  warning   SellerWarning @relation(fields: [warningId], references: [id], onDelete: Cascade)
+  seller    User           @relation("WarningReplySellers", fields: [sellerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("warning_replies")
+}
+
+model BanAppeal {
+  id         String    @id @default(cuid())
+  sellerId   String
+  targetType String // product | shop
+  productId  String?
+  reason     String
+  imageUrl   String?
+  status     String    @default("pending") // pending | approved | rejected
+  adminId    String?
+  adminNote  String?
+  seller     User      @relation("SellerBanAppeals", fields: [sellerId], references: [id], onDelete: Cascade)
+  product    Product?  @relation("ProductBanAppeals", fields: [productId], references: [id], onDelete: SetNull)
+  admin      User?     @relation("AdminReviewedAppeals", fields: [adminId], references: [id], onDelete: SetNull)
+  reviewedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@map("ban_appeals")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@map("cart_items")
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  subtotal    Decimal     @db.Decimal(10, 2)
+  shipping    Decimal     @db.Decimal(10, 2)
+  total       Decimal     @db.Decimal(10, 2)
+  status      String      @default("completed")
+  fullName    String
+  street      String
+  city        String
+  postalCode  String
+  country     String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+  status    String   @default("processing")
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("order_items")
+}
+
+model SellerApplication {
+  id            String    @id @default(cuid())
+  userId        String
+  storeName     String
+  businessEmail String
+  description   String
+  phoneNumber   String
+  idType        String
+  idNumber      String
+  idFrontUrl    String?
+  idBackUrl     String?
+  secondIdType  String?
+  secondIdNumber String?
+  secondIdFrontUrl String?
+  secondIdBackUrl  String?
+  status        String    @default("pending") // pending | approved | rejected
+  reviewNote    String?
+  reviewedAt    DateTime?
+  user          User      @relation("ApplicationOwner", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy    User?     @relation("ApplicationReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedById  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([userId])
+  @@map("seller_applications")
+}
+
+model ProductReview {
+  id        String   @id @default(cuid())
+  productId String
+  userId    String
+  rating    Int
+  comment   String
+  imageUrl  String?
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, userId])
+  @@map("product_reviews")
+}
+
+model Report {
+  id         String    @id @default(cuid())
+  reporterId String
+  targetType String // product | review
+  targetId   String
+  reason     String
+  status     String    @default("pending") // pending | resolved | dismissed
+  handledById String?
+  handledAt   DateTime?
+  reporter   User      @relation("ReportsFiled", fields: [reporterId], references: [id], onDelete: Cascade)
+  handledBy  User?     @relation("ReportResolver", fields: [handledById], references: [id], onDelete: SetNull)
+  createdAt  DateTime  @default(now())
+
+  @@map("reports")
+}
+
+model ModerationLog {
+  id         String    @id @default(cuid())
+  action     String // warn | remove_warning | ban | unban | ban_product | unban_product
+  targetId   String
+  sellerId   String?
+  productId  String?
+  warningId  String?
+  message    String?
+  adminId    String
+  seller     User?     @relation("ModerationLogsForSellers", fields: [sellerId], references: [id], onDelete: SetNull)
+  product    Product?  @relation("ModerationLogsForProducts", fields: [productId], references: [id], onDelete: SetNull)
+  admin      User      @relation("ModerationLogsByAdmins", fields: [adminId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+
+  @@index([action])
+  @@index([targetId])
+  @@map("moderation_logs")
+}
+
+model Withdrawal {
+  id            String   @id @default(cuid())
+  sellerId      String
+  amount        Decimal  @db.Decimal(10, 2)
+  fee           Decimal  @db.Decimal(10, 2) @default(0)
+  method        String   @default("bank_transfer") // bank_transfer | gcash | paypal
+  status        String   @default("processing") // processing | approved | rejected | completed | cancelled
+  receiptNumber String   @unique
+  adminId       String?
+  adminNote     String?
+  processedAt   DateTime?
+  seller        User     @relation("SellerWithdrawals", fields: [sellerId], references: [id], onDelete: Cascade)
+  admin         User?    @relation("AdminWithdrawals", fields: [adminId], references: [id], onDelete: SetNull)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([sellerId])
+  @@index([status])
+  @@map("withdrawals")
+}

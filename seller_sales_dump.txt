@@ -1,0 +1,46 @@
+﻿SHOPSPHERE - SELLER SALES DUMP (seller@shopsphere.com)
+Generated: 2026-08-18 02:32:09
+==================================================================
+
+SUMMARY
+----------------------------------------------
+  Total Sales (excl. cancelled):  PHP 5,699.96
+  Number of orders:               3
+  Units sold:                     4
+  Items all-time:                 3
+
+ORDERS
+==================================================================
+
+Order #D2XSR0DR
+----------------------------------------------
+  Status:        completed
+  Ordered on:    2026-08-18 01:40
+  Customer:      Simply Customer <customer@shopsphere.com>
+  Ship to:       Simply Customer
+                 Sabalo Street, Salmon Street, Caloocan 1400, Philippines
+  Order total:   PHP 1,799.99  (1 unit)
+  Items:
+    - PixelBook Max 16  x1  @ PHP 1,799.99  =  PHP 1,799.99  [processing]
+
+Order #OZ1KFT81
+----------------------------------------------
+  Status:        completed
+  Ordered on:    2026-08-17 23:37
+  Customer:      Demo Seller <seller@shopsphere.com>
+  Ship to:       Demo Seller
+                 123 Test St, Manila 1000, Philippines
+  Order total:   PHP 1,299.99  (1 unit)
+  Items:
+    - UltraBook Pro 14  x1  @ PHP 1,299.99  =  PHP 1,299.99  [processing]
+
+Order #JUHIS61G
+----------------------------------------------
+  Status:        completed
+  Ordered on:    2026-08-17 22:06
+  Customer:      Demo User <demo@shopsphere.com>
+  Ship to:       Demo User
+                 123 Main St, New York 10001, USA
+  Order total:   PHP 2,599.98  (2 units)
+  Items:
+    - UltraBook Pro 14  x2  @ PHP 1,299.99  =  PHP 2,599.98  [processing]

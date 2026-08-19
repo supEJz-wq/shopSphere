@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs><linearGradient id="bg3" gradientTransform="rotate(135 0.5 0.5)"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#4C1D95"/></linearGradient><linearGradient id="acc3" gradientTransform="rotate(135 0.5 0.5)"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e2e8f0"/></linearGradient></defs>
+  <rect width="600" height="600" fill="url(#bg3)"/>
+  <radialGradient id="300300"><stop offset="0%" stop-color="#7C3AED" stop-opacity="0.5"/><stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/></radialGradient><circle cx="300" cy="300" r="260" fill="url(#300300)"/>
+  
+    <rect x="215" y="110" width="170" height="380" rx="38" fill="#ffffff" opacity="0.95"/>
+    <circle cx="300" cy="150" r="7" fill="url(#acc3)" opacity="0.6"/>
+    <rect x="270" y="455" width="60" height="8" rx="4" fill="url(#acc3)" opacity="0.5"/>
+    <circle cx="300" cy="250" r="52" fill="url(#acc3)" opacity="0.35"/>
+    <circle cx="300" cy="250" r="34" fill="url(#acc3)" opacity="0.55"/>
+  <text x="300" y="535" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#ffffff" opacity="0.55" letter-spacing="4">SHOPSPHERE</text>
+</svg>
