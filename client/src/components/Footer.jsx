@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Github, Twitter, Mail } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 
 function Footer() {
+  const { isAuthenticated } = useAuth();
   return (
     <footer data-testid="footer" className="border-t border-slate-100 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -34,8 +36,12 @@ function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-slate-500">
               <li><Link to="/" className="transition-colors hover:text-primary">Home</Link></li>
               <li><Link to="/cart" className="transition-colors hover:text-primary">Cart</Link></li>
-              <li><Link to="/login" className="transition-colors hover:text-primary">Login</Link></li>
-              <li><Link to="/register" className="transition-colors hover:text-primary">Register</Link></li>
+              {!isAuthenticated && (
+                <>
+                  <li><Link to="/login" className="transition-colors hover:text-primary">Login</Link></li>
+                  <li><Link to="/register" className="transition-colors hover:text-primary">Register</Link></li>
+                </>
+              )}
             </ul>
           </div>
         </div>
