@@ -307,6 +307,10 @@ function ProductReviews({ productId }) {
                   </div>
                 </form>
               </>
+            ) : user ? (
+              <p className="text-sm text-slate-500">
+                Only customers can rate and review products.
+              </p>
             ) : (
               <p className="text-sm text-slate-500">
                 <Link to="/login" className="font-semibold text-primary hover:underline">
